@@ -1,16 +1,18 @@
-'use client'
-
-import { FaX, FaClipboard } from "react-icons/fa6";
-
+import { FaX, FaClipboard } from 'react-icons/fa6';
+import { useUrl } from 'nextjs-current-url';
+import Head from 'next/head';
 
 interface LinkPopupProps {
-    hidden: boolean
-    toggleHidden: any
-    link: string,
+    hidden: boolean;
+    toggleHidden: any;
+    link: string;
 }
-const LinkPopup: React.FC<LinkPopupProps> = ({ hidden, toggleHidden, link }) => {
 
-    const url = `${window.location.origin}\/${link}`
+const LinkPopup: React.FC<LinkPopupProps> = ({ hidden, toggleHidden, link }) => {
+    const { href: currentUrl } = useUrl() ?? {};
+    const url = `${currentUrl}/${link}`;
+
+
 
     return (
         <div className={`${hidden ? "hidden" : "flex"} absolute flex flex-col items-center justify-center bg-opacity-30 backdrop-blur-sm w-full h-[80vh]`}>
@@ -22,7 +24,7 @@ const LinkPopup: React.FC<LinkPopupProps> = ({ hidden, toggleHidden, link }) => 
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default LinkPopup
+export default LinkPopup;

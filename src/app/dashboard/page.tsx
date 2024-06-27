@@ -1,7 +1,7 @@
 'use client'
 
 import useUserStore from "@/store"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import LinkComp from "@/components/LinkComp"
@@ -19,13 +19,13 @@ function DashboardPage() {
     const user = useUserStore((state) => state.user)
     const [links, setLinks] = useState<linkType[]>([])
 
-    function checkAuth() {
+    const checkAuth = useCallback(() => {
         if (user.id === 0 && user.name === "" && user.email === "") {
             router.push('/login')
         }
-    }
+    }, [user, router])
 
-    async function fetchLinks() {
+    const fetchLinks = useCallback(async () => {
         const response = await fetch('/api/links', {
             method: 'POST',
             headers: {
@@ -36,9 +36,9 @@ function DashboardPage() {
 
         const data = await response.json()
         setLinks(data.links)
-    }
+    }, [user.id])
 
-    async function handleBtn(id: number) {
+    const handleBtn = async (id: number) => {
         setLinks(prevLinks => prevLinks.filter(link => link.id !== id))
 
         const response = await fetch("/api/link/delete", {
@@ -52,15 +52,14 @@ function DashboardPage() {
         console.log(data)
     }
 
-
     useEffect(() => {
-        async function effectFunc() {
+        const effectFunc = async () => {
             checkAuth()
             await fetchLinks()
         }
 
         effectFunc()
-    }, [user])
+    }, [checkAuth, fetchLinks])
 
     return (
         <div className="h-full mx-[15rem] py-5">
